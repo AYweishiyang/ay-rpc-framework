@@ -9,19 +9,18 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>test-server</artifactId>
+    <artifactId>test-client</artifactId>
     <dependencies>
         <dependency>
             <groupId>fun.shiyang</groupId>
-            <artifactId>hello-service-api</artifactId>
-            <version>${project.version}</version>
+            <artifactId>rpc-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fun.shiyang</groupId>
-            <artifactId>rpc-core</artifactId>
-            <version>${project.version}</version>
+            <artifactId>hello-service-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
-
     </dependencies>
 
 

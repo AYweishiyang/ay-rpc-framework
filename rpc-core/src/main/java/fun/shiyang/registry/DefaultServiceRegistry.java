@@ -19,11 +19,11 @@ public class DefaultServiceRegistry implements ServiceRegistry{
     /**
      * 服务名与提供服务的对象的对应关系
      */
-    private final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
+    private static final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
     /**
      * 当前有哪些对象已经被注册
      */
-    private final Set<String> registeredService = ConcurrentHashMap.newKeySet();
+    private static final Set<String> registeredService = ConcurrentHashMap.newKeySet();
 
     @Override
     public synchronized <T> void register(T service) {

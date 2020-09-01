@@ -1,8 +1,8 @@
 package fun.shiyang;
 
-import fun.shiyang.RpcServer;
 import fun.shiyang.entity.RpcRequest;
 import fun.shiyang.entity.RpcResponse;
+import fun.shiyang.transport.socket.server.SocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ import java.net.Socket;
  * @create 2020-09-01 16:20
  */
 public class WorkerThread implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
     private final Socket socket;
     private final Object service;
 
