@@ -5,7 +5,6 @@ import fun.shiyang.entity.RpcRequest;
 import fun.shiyang.entity.RpcResponse;
 import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
-import fun.shiyang.registry.NacosServiceRegistry;
 import fun.shiyang.registry.ServiceRegistry;
 import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.transport.RpcClient;
@@ -37,8 +36,8 @@ public class NettyClient implements RpcClient {
 
     private CommonSerializer serializer;
 
-    public NettyClient() {
-        this.serviceRegistry = new NacosServiceRegistry();
+    public NettyClient(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
     static {
         EventLoopGroup group = new NioEventLoopGroup();

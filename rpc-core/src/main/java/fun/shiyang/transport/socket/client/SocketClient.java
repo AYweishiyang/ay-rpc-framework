@@ -5,7 +5,7 @@ import fun.shiyang.entity.RpcResponse;
 import fun.shiyang.enumeration.ResponseCode;
 import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
-import fun.shiyang.registry.NacosServiceRegistry;
+import fun.shiyang.registry.nacos.NacosServiceRegistry;
 import fun.shiyang.registry.ServiceRegistry;
 import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.transport.RpcClient;

@@ -1,6 +1,7 @@
 package fun.shiyang.exception;
 
 import fun.shiyang.enumeration.RpcError;
+import fun.shiyang.enumeration.RpcErrorMessage;
 
 /**
  * @author ay
@@ -11,6 +12,9 @@ public class RpcException extends RuntimeException{
         super(error.getMessage() + ": " + detail);
     }
 
+    public RpcException(RpcErrorMessage error, String detail) {
+        super(error.getMessage() + ": " + detail);
+    }
     public RpcException(String message, Throwable cause) {
         super(message, cause);
     }

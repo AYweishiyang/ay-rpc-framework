@@ -7,7 +7,6 @@ import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
 import fun.shiyang.provider.ServiceProvider;
 import fun.shiyang.provider.ServiceProviderImpl;
-import fun.shiyang.registry.NacosServiceRegistry;
 import fun.shiyang.registry.ServiceRegistry;
 import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.serializer.KryoSerializer;
@@ -35,12 +34,12 @@ public class NettyServer implements RpcServer {
 
     private CommonSerializer serializer;
 
-    private final ServiceRegistry serviceRegistry;
+    private  ServiceRegistry serviceRegistry;
     private final ServiceProvider serviceProvider;
-    public NettyServer(String host, int port) {
+    public NettyServer(String host, int port,ServiceRegistry serviceRegistry) {
         this.host = host;
         this.port = port;
-        serviceRegistry = new NacosServiceRegistry();
+        this.serviceRegistry = serviceRegistry;
         serviceProvider = new ServiceProviderImpl();
     }
 
