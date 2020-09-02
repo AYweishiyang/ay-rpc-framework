@@ -1,11 +1,10 @@
 package fun.shiyang.transport.socket.server;
 
-import fun.shiyang.RequestHandlerThread;
 import fun.shiyang.handler.RequestHandler;
 import fun.shiyang.registry.ServiceRegistry;
 import fun.shiyang.transport.RpcServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,9 +15,8 @@ import java.util.concurrent.*;
  * @author ay
  * @create 2020-09-01 16:13
  */
+@Slf4j
 public class SocketServer implements RpcServer {
-
-    private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
 
     private static final int CORE_POOL_SIZE = 5;
     private static final int MAXIMUM_POOL_SIZE = 50;
@@ -37,15 +35,15 @@ public class SocketServer implements RpcServer {
     @Override
     public void start(int port) {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            logger.info("服务器启动……");
+            log.info("服务器启动……");
             Socket socket;
             while((socket = serverSocket.accept()) != null) {
-                logger.info("消费者连接: {}:{}", socket.getInetAddress(), socket.getPort());
+                log.info("消费者连接: {}:{}", socket.getInetAddress(), socket.getPort());
                 threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry));
             }
             threadPool.shutdown();
         } catch (IOException e) {
-            logger.error("服务器启动时有错误发生:", e);
+            log.error("服务器启动时有错误发生:", e);
         }
     }
 }

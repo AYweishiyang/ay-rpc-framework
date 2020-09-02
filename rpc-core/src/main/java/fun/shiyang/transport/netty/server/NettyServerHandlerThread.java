@@ -10,16 +10,15 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author ay
  * @create 2020-09-01 22:56
  */
-public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
+@Slf4j
+public class NettyServerHandlerThread extends SimpleChannelInboundHandler<RpcRequest> {
 
-    private static final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
     private static RequestHandler requestHandler;
     private static ServiceRegistry serviceRegistry;
 
@@ -31,7 +30,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
         try {
-            logger.info("服务器接收到请求: {}", msg);
+            log.info("服务器接收到请求: {}", msg);
             String interfaceName = msg.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
             Object result = requestHandler.handle(msg, service);
@@ -44,7 +43,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("处理过程调用时有错误发生:");
+        log.error("处理过程调用时有错误发生:");
         cause.printStackTrace();
         ctx.close();
     }

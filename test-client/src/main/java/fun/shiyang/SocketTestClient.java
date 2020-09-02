@@ -1,5 +1,6 @@
 package fun.shiyang;
 
+import fun.shiyang.transport.RpcClientProxy;
 import fun.shiyang.transport.socket.client.SocketClient;
 
 /**

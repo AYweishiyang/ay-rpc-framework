@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.shiyang.entity.RpcRequest;
 import fun.shiyang.enumeration.SerializerCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -13,9 +12,9 @@ import java.io.IOException;
  * @author ay
  * @create 2020-09-01 22:46
  */
+@Slf4j
 public class JsonSerializer implements CommonSerializer {
 
-    private static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -24,7 +23,7 @@ public class JsonSerializer implements CommonSerializer {
         try {
             return objectMapper.writeValueAsBytes(obj);
         } catch (JsonProcessingException e) {
-            logger.error("序列化时有错误发生: {}", e.getMessage());
+            log.error("序列化时有错误发生: {}", e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -39,7 +38,7 @@ public class JsonSerializer implements CommonSerializer {
             }
             return obj;
         } catch (IOException e) {
-            logger.error("反序列化时有错误发生: {}", e.getMessage());
+            log.error("反序列化时有错误发生: {}", e.getMessage());
             e.printStackTrace();
             return null;
         }

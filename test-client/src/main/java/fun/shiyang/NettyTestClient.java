@@ -1,6 +1,7 @@
 package fun.shiyang;
 
 import fun.shiyang.transport.RpcClient;
+import fun.shiyang.transport.RpcClientProxy;
 import fun.shiyang.transport.netty.client.NettyClient;
 
 /**

@@ -2,20 +2,18 @@ package fun.shiyang.registry;
 
 import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author ay
  * @create 2020-09-01 18:16
  */
+@Slf4j
 public class DefaultServiceRegistry implements ServiceRegistry{
-    private static final Logger logger = LoggerFactory.getLogger(DefaultServiceRegistry.class);
     /**
      * 服务名与提供服务的对象的对应关系
      */
@@ -41,7 +39,7 @@ public class DefaultServiceRegistry implements ServiceRegistry{
         for(Class<?> i : interfaces) {
             serviceMap.put(i.getCanonicalName(), service);
         }
-        logger.info("向接口: {} 注册服务: {}", interfaces, serviceName);
+        log.info("向接口: {} 注册服务: {}", interfaces, serviceName);
     }
 
     @Override

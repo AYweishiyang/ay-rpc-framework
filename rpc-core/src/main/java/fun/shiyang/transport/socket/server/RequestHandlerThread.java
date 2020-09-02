@@ -1,11 +1,10 @@
-package fun.shiyang;
+package fun.shiyang.transport.socket.server;
 
 import fun.shiyang.entity.RpcRequest;
 import fun.shiyang.entity.RpcResponse;
 import fun.shiyang.handler.RequestHandler;
 import fun.shiyang.registry.ServiceRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,9 +16,9 @@ import java.net.Socket;
  * @author ay
  * @create 2020-09-01 18:43
  */
+@Slf4j
 public class RequestHandlerThread implements Runnable {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandlerThread.class);
 
     private Socket socket;
     private RequestHandler requestHandler;
@@ -42,7 +41,7 @@ public class RequestHandlerThread implements Runnable {
             objectOutputStream.writeObject(RpcResponse.success(result));
             objectOutputStream.flush();
         } catch (IOException | ClassNotFoundException e) {
-            logger.error("调用或发送时有错误发生：", e);
+            log.error("调用或发送时有错误发生：", e);
         }
     }
 }

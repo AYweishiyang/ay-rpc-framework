@@ -13,15 +13,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 使用Netty传输数据
  * @author ay
  * @create 2020-09-01 22:21
  */
+@Slf4j
 public class NettyClient implements RpcClient {
-    private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
 
     private String host;
     private int port;
@@ -52,14 +52,14 @@ public class NettyClient implements RpcClient {
     public Object sendRequest(RpcRequest rpcRequest) {
         try {
             ChannelFuture future = bootstrap.connect(host, port).sync();
-            logger.info("客户端连接到服务器 {}:{}", host, port);
+            log.info("客户端连接到服务器 {}:{}", host, port);
             Channel channel = future.channel();
             if(channel != null) {
                 channel.writeAndFlush(rpcRequest).addListener(future1 -> {
                     if(future1.isSuccess()) {
-                        logger.info(String.format("客户端发送消息: %s", rpcRequest.toString()));
+                        log.info(String.format("客户端发送消息: %s", rpcRequest.toString()));
                     } else {
-                        logger.error("发送消息时有错误发生: ", future1.cause());
+                        log.error("发送消息时有错误发生: ", future1.cause());
                     }
                 });
                 channel.closeFuture().sync();
@@ -68,7 +68,7 @@ public class NettyClient implements RpcClient {
                 return rpcResponse.getData();
             }
         } catch (InterruptedException e) {
-            logger.error("发送消息时有错误发生: ", e);
+            log.error("发送消息时有错误发生: ", e);
         }
         return null;
     }
