@@ -3,8 +3,8 @@ package fun.shiyang.transport.netty.server;
 import fun.shiyang.entity.RpcRequest;
 import fun.shiyang.entity.RpcResponse;
 import fun.shiyang.handler.RequestHandler;
-import fun.shiyang.registry.DefaultServiceRegistry;
-import fun.shiyang.registry.ServiceRegistry;
+import fun.shiyang.provider.ServiceProviderImpl;
+import fun.shiyang.provider.ServiceProvider;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -20,22 +20,19 @@ import lombok.extern.slf4j.Slf4j;
 public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     private static RequestHandler requestHandler;
-    private static ServiceRegistry serviceRegistry;
+    private static ServiceProvider serviceRegistry;
 
     static {
         requestHandler = new RequestHandler();
-        serviceRegistry = new DefaultServiceRegistry();
+        serviceRegistry = new ServiceProviderImpl();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
         try {
             log.info("服务器接收到请求: {}", msg);
-            //根据interfaceName找对象service
-            String interfaceName = msg.getInterfaceName();
-            Object service = serviceRegistry.getService(interfaceName);
-            Object result = requestHandler.handle(msg, service);
-            ChannelFuture future = ctx.writeAndFlush(RpcResponse.success(result));
+            Object result = requestHandler.handle(msg);
+            ChannelFuture future = ctx.writeAndFlush(RpcResponse.success(result,msg.getRequestId()));
             future.addListener(ChannelFutureListener.CLOSE);
         } finally {
             ReferenceCountUtil.release(msg);

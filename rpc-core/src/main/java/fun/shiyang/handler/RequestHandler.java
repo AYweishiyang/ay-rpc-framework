@@ -3,8 +3,9 @@ package fun.shiyang.handler;
 import fun.shiyang.entity.RpcRequest;
 import fun.shiyang.entity.RpcResponse;
 import fun.shiyang.enumeration.ResponseCode;
+import fun.shiyang.provider.ServiceProvider;
+import fun.shiyang.provider.ServiceProviderImpl;
 import lombok.extern.slf4j.Slf4j;
-
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,8 +18,16 @@ import java.lang.reflect.Method;
 @Slf4j
 public class RequestHandler {
 
-    public Object handle(RpcRequest rpcRequest, Object service) {
+    private static final ServiceProvider serviceProvider;
+
+    static {
+        serviceProvider = new ServiceProviderImpl();
+    }
+
+    public Object handle(RpcRequest rpcRequest) {
         Object result = null;
+        Object service = serviceProvider.getServiceProvider(rpcRequest.getInterfaceName());
+
         try {
             result = invokeTargetMethod(rpcRequest, service);
             log.info("服务:{} 成功调用方法:{}", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());

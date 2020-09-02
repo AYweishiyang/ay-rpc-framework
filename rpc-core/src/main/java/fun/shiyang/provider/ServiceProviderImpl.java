@@ -1,4 +1,4 @@
-package fun.shiyang.registry;
+package fun.shiyang.provider;
 
 import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
@@ -13,18 +13,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @create 2020-09-01 18:16
  */
 @Slf4j
-public class DefaultServiceRegistry implements ServiceRegistry{
+public class ServiceProviderImpl implements ServiceProvider {
     /**
-     * 服务名与提供服务的对象的对应关系
+     * 服务名与提供服务的对象的对应关系，key为接口名，value为实现对应接口的对象，所以一个接口只可以有一个实现
      */
     private static final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
     /**
-     * 当前有哪些对象已经被注册
+     * 当前有哪些对象已经被注册(存储对象名)
      */
     private static final Set<String> registeredService = ConcurrentHashMap.newKeySet();
 
     @Override
-    public synchronized <T> void register(T service) {
+    public <T> void addServiceProvider(T service) {
         //获取全限定类名
         String serviceName = service.getClass().getCanonicalName();
         if(registeredService.contains(serviceName)) {
@@ -43,7 +43,7 @@ public class DefaultServiceRegistry implements ServiceRegistry{
     }
 
     @Override
-    public Object getService(String serviceName) {
+    public Object getServiceProvider(String serviceName) {
         Object service = serviceMap.get(serviceName);
         if(service == null) {
             throw new RpcException(RpcError.SERVICE_NOT_FOUND);

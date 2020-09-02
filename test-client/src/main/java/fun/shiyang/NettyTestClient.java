@@ -1,5 +1,6 @@
 package fun.shiyang;
 
+import fun.shiyang.serializer.KryoSerializer;
 import fun.shiyang.transport.RpcClient;
 import fun.shiyang.transport.RpcClientProxy;
 import fun.shiyang.transport.netty.client.NettyClient;
@@ -11,10 +12,12 @@ import fun.shiyang.transport.netty.client.NettyClient;
 public class NettyTestClient {
 
     public static void main(String[] args) {
-        RpcClient client = new NettyClient("127.0.0.1", 9999);
+
+        RpcClient client = new NettyClient();
+        client.setSerializer(new KryoSerializer());
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
-        HelloObject object = new HelloObject(123456789, "This is a message from client");
+        HelloObject object = new HelloObject(12, "This is a message");
         String res = helloService.hello(object);
         System.out.println(res);
     }
