@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  * @create 2020-09-01 22:56
  */
 @Slf4j
-public class NettyServerHandlerThread extends SimpleChannelInboundHandler<RpcRequest> {
+public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     private static RequestHandler requestHandler;
     private static ServiceRegistry serviceRegistry;
@@ -31,6 +31,7 @@ public class NettyServerHandlerThread extends SimpleChannelInboundHandler<RpcReq
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
         try {
             log.info("服务器接收到请求: {}", msg);
+            //根据interfaceName找对象service
             String interfaceName = msg.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
             Object result = requestHandler.handle(msg, service);
