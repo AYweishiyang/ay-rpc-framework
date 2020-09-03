@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Curator(zookeeper client) utils
- *
+ * 来自JavaGuide
  * @author shuang.kou
  * @createTime 2020年05月31日 11:38:00
  */
@@ -32,6 +32,7 @@ public final class CuratorUtils {
     private static final int BASE_SLEEP_TIME = 1000;
     private static final int MAX_RETRIES = 3;
     public static final String ZK_REGISTER_ROOT_PATH = "/my-rpc";
+    //key为servicename,value为地址(IP:PORT)List
     private static final Map<String, List<String>> SERVICE_ADDRESS_MAP = new ConcurrentHashMap<>();
     private static final Set<String> REGISTERED_PATH_SET = ConcurrentHashMap.newKeySet();
     private static CuratorFramework zkClient;

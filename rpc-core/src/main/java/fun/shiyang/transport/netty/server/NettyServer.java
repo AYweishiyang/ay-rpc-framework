@@ -3,6 +3,7 @@ package fun.shiyang.transport.netty.server;
 
 import fun.shiyang.coder.CommonDecoder;
 import fun.shiyang.coder.CommonEncoder;
+import fun.shiyang.config.CustomShutdownHook;
 import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
 import fun.shiyang.provider.ServiceProvider;
@@ -61,6 +62,7 @@ public class NettyServer implements RpcServer {
      */
     @Override
     public void start() {
+        CustomShutdownHook.getCustomShutdownHook().clearAll();
         //2.创建线程池 boss负责请求转发 worker负责相应处理
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

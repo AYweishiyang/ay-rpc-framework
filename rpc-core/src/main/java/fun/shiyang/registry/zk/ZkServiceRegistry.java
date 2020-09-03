@@ -1,6 +1,5 @@
 package fun.shiyang.registry.zk;
-
-import fun.shiyang.enumeration.RpcErrorMessage;
+import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
 import fun.shiyang.loadbalance.LoadBalance;
 import fun.shiyang.loadbalance.RandomLoadBalance;
@@ -37,7 +36,7 @@ public class ZkServiceRegistry implements ServiceRegistry {
         CuratorFramework zkClient = CuratorUtils.getZkClient();
         List<String> serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, serviceName);
         if (serviceUrlList.size() == 0) {
-            throw new RpcException(RpcErrorMessage.SERVICE_CAN_NOT_BE_FOUND, serviceName);
+            throw new RpcException(RpcError.SERVICE_NOT_FOUND, serviceName);
         }
         // load balancing
         String targetServiceUrl = loadBalance.selectServiceAddress(serviceUrlList);
