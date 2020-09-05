@@ -1,6 +1,5 @@
 package fun.shiyang;
 
-import fun.shiyang.serializer.KryoSerializer;
 import fun.shiyang.transport.RpcClientProxy;
 import fun.shiyang.transport.socket.client.SocketClient;
 
@@ -14,8 +13,10 @@ public class SocketTestClient {
 
         RpcClientProxy proxy = new RpcClientProxy(client);
         HelloService helloService = proxy.getProxy(HelloService.class);
+        HelloService2 helloService2 = proxy.getProxy(HelloService2.class);
         HelloObject object = new HelloObject(123456789, " a message from client");
-        String res = helloService.hello(object);
-        System.out.println(res);
+        System.out.println(helloService.hello(object));
+        System.out.println(helloService2.hello2(object));
+
     }
 }

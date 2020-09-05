@@ -21,6 +21,7 @@ public class CustomShutdownHook {
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             CuratorUtils.clearRegistry(CuratorUtils.getZkClient());
             ThreadPoolFactoryUtils.shutDownAllThreadPool();
+            log.info("ShutdownHook :clearRegistry done");
         }));
     }
 }

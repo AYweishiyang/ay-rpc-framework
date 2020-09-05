@@ -8,9 +8,7 @@ import fun.shiyang.exception.RpcException;
 import fun.shiyang.loadbalance.LoadBalance;
 import fun.shiyang.loadbalance.RandomLoadBalance;
 import fun.shiyang.registry.ServiceDiscovery;
-import fun.shiyang.registry.nacos.NacosServiceDiscovery;
-import fun.shiyang.registry.nacos.NacosServiceRegistry;
-import fun.shiyang.registry.ServiceRegistry;
+import fun.shiyang.registry.zk.ZkServiceDiscovery;
 import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.transport.RpcClient;
 import fun.shiyang.transport.socket.util.ObjectReader;
@@ -47,7 +45,7 @@ public class SocketClient implements RpcClient {
     }
 
     public SocketClient(Integer serializer, LoadBalance loadBalancer) {
-        this.serviceDiscovery = new NacosServiceDiscovery(loadBalancer);
+        this.serviceDiscovery = new ZkServiceDiscovery(loadBalancer);
         this.serializer = CommonSerializer.getByCode(serializer);
     }
 
@@ -55,6 +53,7 @@ public class SocketClient implements RpcClient {
 
     @Override
     public Object sendRequest(RpcRequest rpcRequest) {
+        log.info("begin send rpcRequest = " + rpcRequest);
         if(serializer == null) {
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
@@ -67,6 +66,7 @@ public class SocketClient implements RpcClient {
             ObjectWriter.writeObject(outputStream, rpcRequest, serializer);
             Object obj = ObjectReader.readObject(inputStream);
             RpcResponse rpcResponse = (RpcResponse) obj;
+            log.info("received rpcResponse" + rpcResponse);
             if (rpcResponse == null) {
                 log.error("服务调用失败，service：{}", rpcRequest.getInterfaceName());
                 throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE, " service:" + rpcRequest.getInterfaceName());

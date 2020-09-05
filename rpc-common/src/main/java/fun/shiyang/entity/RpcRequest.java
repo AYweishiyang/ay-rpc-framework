@@ -2,6 +2,7 @@ package fun.shiyang.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -10,9 +11,10 @@ import java.io.Serializable;
  * @create 2020-09-01 14:48
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class RpcRequest implements Serializable {
-    public RpcRequest() {}
+
     /**
      * 请求号
      */
@@ -33,4 +35,10 @@ public class RpcRequest implements Serializable {
      * 调用方法的参数类型
      */
     private Class<?>[] paramTypes;
+
+    /**
+     * 是否是心跳包
+     */
+    private Boolean heartBeat;
+
 }

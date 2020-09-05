@@ -41,7 +41,7 @@ public abstract class AbstractRpcServer implements RpcServer{
                 throw new RpcException(RpcError.SERVICE_SCAN_PACKAGE_NOT_FOUND);
             }
         } catch (ClassNotFoundException e) {
-            log.error("出现未知错误");
+            log.error("scanServices出现未知错误");
             throw new RpcException(RpcError.UNKNOWN_ERROR);
         }
         String basePackage = startClass.getAnnotation(ServiceScan.class).value();

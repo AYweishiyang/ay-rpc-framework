@@ -9,6 +9,7 @@ import java.util.concurrent.*;
  * @author ay
  * @create 2020-09-02 16:44
  */
+@Deprecated
 public class ThreadPoolFactory {
     /**
      * 线程池参数

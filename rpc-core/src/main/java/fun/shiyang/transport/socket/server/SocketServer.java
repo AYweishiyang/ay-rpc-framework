@@ -1,23 +1,19 @@
 package fun.shiyang.transport.socket.server;
 
-import fun.shiyang.enumeration.RpcError;
-import fun.shiyang.exception.RpcException;
+
 import fun.shiyang.handler.RequestHandler;
-import fun.shiyang.provider.ServiceProvider;
 import fun.shiyang.provider.ServiceProviderImpl;
-import fun.shiyang.registry.nacos.NacosServiceRegistry;
-import fun.shiyang.registry.ServiceRegistry;
+import fun.shiyang.registry.zk.ZkServiceRegistry;
 import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.transport.AbstractRpcServer;
-import fun.shiyang.transport.RpcServer;
-import fun.shiyang.utils.ThreadPoolFactory;
+import fun.shiyang.utils.threadpool.ThreadPoolFactoryUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author ay
@@ -38,8 +34,9 @@ public class SocketServer extends AbstractRpcServer {
     public SocketServer(String host, int port, Integer serializer) {
         this.host = host;
         this.port = port;
-        threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
-        this.serviceRegistry = new NacosServiceRegistry();
+        threadPool = ThreadPoolFactoryUtils.createCustomThreadPoolIfAbsent("socket-server-rpc-pool");
+        ThreadPoolFactoryUtils.printThreadPoolStatus((ThreadPoolExecutor)threadPool);
+        this.serviceRegistry = new ZkServiceRegistry();
         this.serviceProvider = new ServiceProviderImpl();
         this.serializer = CommonSerializer.getByCode(serializer);
         scanServices();

@@ -34,6 +34,7 @@ public class ThreadPoolFactoryUtils {
     }
 
     public static ExecutorService createCustomThreadPoolIfAbsent(CustomThreadPoolConfig customThreadPoolConfig, String threadNamePrefix, Boolean daemon) {
+        // java8之后。若key对应的value为空，会将第二个参数的返回值存入并返回
         ExecutorService threadPool = THREAD_POOLS.computeIfAbsent(threadNamePrefix,
                 k -> createThreadPool(customThreadPoolConfig, threadNamePrefix, daemon));
         // 如果 threadPool 被 shutdown 的话就重新创建一个
@@ -50,6 +51,7 @@ public class ThreadPoolFactoryUtils {
      */
     public static void shutDownAllThreadPool() {
         log.info("call shutDownAllThreadPool method");
+        //遍历THREAD_POOLS关闭线程池
         THREAD_POOLS.entrySet().parallelStream().forEach(entry -> {
             ExecutorService executorService = entry.getValue();
             executorService.shutdown();
@@ -63,10 +65,15 @@ public class ThreadPoolFactoryUtils {
         });
     }
 
-    private static ExecutorService createThreadPool(CustomThreadPoolConfig customThreadPoolConfig, String threadNamePrefix, Boolean daemon) {
+    private static ExecutorService createThreadPool(CustomThreadPoolConfig customThreadPoolConfig,
+                                                    String threadNamePrefix,
+                                                    Boolean daemon) {
         ThreadFactory threadFactory = createThreadFactory(threadNamePrefix, daemon);
-        return new ThreadPoolExecutor(customThreadPoolConfig.getCorePoolSize(), customThreadPoolConfig.getMaximumPoolSize(),
-                customThreadPoolConfig.getKeepAliveTime(), customThreadPoolConfig.getUnit(), customThreadPoolConfig.getWorkQueue(),
+        return new ThreadPoolExecutor(customThreadPoolConfig.getCorePoolSize(),
+                customThreadPoolConfig.getMaximumPoolSize(),
+                customThreadPoolConfig.getKeepAliveTime(),
+                customThreadPoolConfig.getUnit(),
+                customThreadPoolConfig.getWorkQueue(),
                 threadFactory);
     }
 
