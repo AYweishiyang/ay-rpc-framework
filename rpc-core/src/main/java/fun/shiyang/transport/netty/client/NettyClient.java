@@ -5,7 +5,9 @@ import fun.shiyang.entity.RpcRequest;
 import fun.shiyang.entity.RpcResponse;
 import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
-import fun.shiyang.registry.ServiceRegistry;
+import fun.shiyang.loadbalance.RandomLoadBalance;
+import fun.shiyang.registry.ServiceDiscovery;
+import fun.shiyang.registry.zk.ZkServiceDiscovery;
 import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.transport.RpcClient;
 import fun.shiyang.utils.RpcMessageChecker;
@@ -32,13 +34,16 @@ public class NettyClient implements RpcClient {
 
     private static final Bootstrap bootstrap;
 
-    private final ServiceRegistry serviceRegistry;
+
+    private final ServiceDiscovery serviceDiscovery = new ZkServiceDiscovery(new RandomLoadBalance());
 
     private CommonSerializer serializer;
 
-    public NettyClient(ServiceRegistry serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
+
+    public NettyClient(Integer serializer) {
+        this.serializer = CommonSerializer.getByCode(serializer);
     }
+
     static {
         EventLoopGroup group = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
@@ -48,10 +53,7 @@ public class NettyClient implements RpcClient {
     }
 
 
-    @Override
-    public void setSerializer(CommonSerializer serializer) {
-        this.serializer = serializer;
-    }
+
 
     @Override
     public Object sendRequest(RpcRequest rpcRequest) {
@@ -61,7 +63,7 @@ public class NettyClient implements RpcClient {
         }
         AtomicReference<Object> result = new AtomicReference<>(null);
         try {
-            InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
             Channel channel = ChannelProvider.get(inetSocketAddress, serializer);
 
             if(channel.isActive()) {

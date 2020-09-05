@@ -18,10 +18,9 @@ import java.util.List;
 @Slf4j
 public class ZkServiceRegistry implements ServiceRegistry {
 
-    private final LoadBalance loadBalance;
+
 
     public ZkServiceRegistry() {
-        this.loadBalance = new RandomLoadBalance();
     }
 
     @Override
@@ -31,19 +30,5 @@ public class ZkServiceRegistry implements ServiceRegistry {
         CuratorUtils.createPersistentNode(zkClient, servicePath);
     }
 
-    @Override
-    public InetSocketAddress lookupService(String serviceName) {
-        CuratorFramework zkClient = CuratorUtils.getZkClient();
-        List<String> serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, serviceName);
-        if (serviceUrlList.size() == 0) {
-            throw new RpcException(RpcError.SERVICE_NOT_FOUND, serviceName);
-        }
-        // load balancing
-        String targetServiceUrl = loadBalance.selectServiceAddress(serviceUrlList);
-        log.info("Successfully found the service address:[{}]", targetServiceUrl);
-        String[] socketAddressArray = targetServiceUrl.split(":");
-        String host = socketAddressArray[0];
-        int port = Integer.parseInt(socketAddressArray[1]);
-        return new InetSocketAddress(host, port);
-    }
+
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.lang.reflect.Proxy;
+
 
 /**
  * @author ay

@@ -8,6 +8,6 @@ import fun.shiyang.serializer.CommonSerializer;
  * @create 2020-09-01 21:56
  */
 public interface RpcClient {
-    void setSerializer(CommonSerializer serializer);
+    int DEFAULT_SERIALIZER = CommonSerializer.KRYO_SERIALIZER;
     Object sendRequest(RpcRequest rpcRequest);
 }

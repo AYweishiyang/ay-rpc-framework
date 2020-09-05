@@ -1,6 +1,9 @@
 package fun.shiyang;
 
+import fun.shiyang.loadbalance.RandomLoadBalance;
+import fun.shiyang.registry.zk.ZkServiceDiscovery;
 import fun.shiyang.registry.zk.ZkServiceRegistry;
+import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.serializer.KryoSerializer;
 import fun.shiyang.transport.RpcClient;
 import fun.shiyang.transport.RpcClientProxy;
@@ -14,8 +17,8 @@ public class NettyTestClient {
 
     public static void main(String[] args) {
 
-        RpcClient client = new NettyClient(new ZkServiceRegistry());
-        client.setSerializer(new KryoSerializer());
+        RpcClient client = new NettyClient(CommonSerializer.KRYO_SERIALIZER);
+
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         HelloObject object = new HelloObject(12, "This is a message");

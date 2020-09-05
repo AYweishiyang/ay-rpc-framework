@@ -1,20 +1,20 @@
 package fun.shiyang;
 
-import fun.shiyang.registry.zk.ZkServiceRegistry;
-import fun.shiyang.serializer.KryoSerializer;
+import fun.shiyang.annotation.ServiceScan;
+import fun.shiyang.serializer.CommonSerializer;
+import fun.shiyang.transport.RpcServer;
 import fun.shiyang.transport.netty.server.NettyServer;
 
 /**
  * @author ay
  * @create 2020-09-01 22:58
  */
+@ServiceScan
 public class NettyTestServer {
 
     public static void main(String[] args) {
-        HelloService helloService = new HelloServiceImpl();
-        NettyServer server = new NettyServer("127.0.0.1", 9999,new ZkServiceRegistry());
-        server.setSerializer(new KryoSerializer());
-        server.publishService(helloService,HelloService.class);
+        RpcServer server = new NettyServer("127.0.0.1", 9999, CommonSerializer.PROTOBUF_SERIALIZER);
+        server.start();
     }
 
 }

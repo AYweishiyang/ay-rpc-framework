@@ -9,8 +9,11 @@ import fun.shiyang.exception.RpcException;
 import fun.shiyang.provider.ServiceProvider;
 import fun.shiyang.provider.ServiceProviderImpl;
 import fun.shiyang.registry.ServiceRegistry;
+import fun.shiyang.registry.nacos.NacosServiceRegistry;
+import fun.shiyang.registry.zk.ZkServiceRegistry;
 import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.serializer.KryoSerializer;
+import fun.shiyang.transport.AbstractRpcServer;
 import fun.shiyang.transport.RpcServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -28,33 +31,22 @@ import java.net.InetSocketAddress;
  * @create 2020-09-01 22:07
  */
 @Slf4j
-public class NettyServer implements RpcServer {
+public class NettyServer extends AbstractRpcServer {
 
-    private final String host;
-    private final int port;
 
-    private CommonSerializer serializer;
+    private final CommonSerializer serializer;
 
-    private  ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
-    public NettyServer(String host, int port,ServiceRegistry serviceRegistry) {
-        this.host = host;
-        this.port = port;
-        this.serviceRegistry = serviceRegistry;
-        serviceProvider = new ServiceProviderImpl();
+    public NettyServer(String host, int port) {
+        this(host, port, DEFAULT_SERIALIZER);
     }
 
-    @Override
-    public <T> void publishService(Object service, Class<T> serviceClass) {
-        if(serializer == null) {
-            log.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        //将service添加到registeredService
-        serviceProvider.addServiceProvider(service);
-        //将类名、InetSocketAddress注册到注册中心
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        start();
+    public NettyServer(String host, int port, Integer serializer) {
+        this.host = host;
+        this.port = port;
+        serviceRegistry = new ZkServiceRegistry();
+        serviceProvider = new ServiceProviderImpl();
+        this.serializer = CommonSerializer.getByCode(serializer);
+        scanServices();
     }
 
     /**
@@ -98,11 +90,6 @@ public class NettyServer implements RpcServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    @Override
-    public void setSerializer(CommonSerializer serializer) {
-        this.serializer = serializer;
     }
 
 

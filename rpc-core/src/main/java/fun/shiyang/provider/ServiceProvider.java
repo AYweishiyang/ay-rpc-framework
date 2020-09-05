@@ -5,7 +5,7 @@ package fun.shiyang.provider;
  * @create 2020-09-01 18:14
  */
 public interface ServiceProvider {
-    <T> void addServiceProvider(T service);
+    <T> void addServiceProvider(T service,String serviceName);
 
     Object getServiceProvider(String serviceName);
 }

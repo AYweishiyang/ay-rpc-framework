@@ -5,6 +5,10 @@ import fun.shiyang.entity.RpcResponse;
 import fun.shiyang.enumeration.ResponseCode;
 import fun.shiyang.enumeration.RpcError;
 import fun.shiyang.exception.RpcException;
+import fun.shiyang.loadbalance.LoadBalance;
+import fun.shiyang.loadbalance.RandomLoadBalance;
+import fun.shiyang.registry.ServiceDiscovery;
+import fun.shiyang.registry.nacos.NacosServiceDiscovery;
 import fun.shiyang.registry.nacos.NacosServiceRegistry;
 import fun.shiyang.registry.ServiceRegistry;
 import fun.shiyang.serializer.CommonSerializer;
@@ -28,19 +32,23 @@ import java.net.Socket;
 @Slf4j
 public class SocketClient implements RpcClient {
 
-    private final ServiceRegistry serviceRegistry;
+    private final ServiceDiscovery serviceDiscovery;
+
+    private final CommonSerializer serializer;
 
     public SocketClient() {
-        this.serviceRegistry = new NacosServiceRegistry();
+        this(DEFAULT_SERIALIZER, new RandomLoadBalance());
+    }
+    public SocketClient(LoadBalance loadBalance) {
+        this(DEFAULT_SERIALIZER, loadBalance);
+    }
+    public SocketClient(Integer serializer) {
+        this(serializer, new RandomLoadBalance());
     }
 
-    private CommonSerializer serializer;
-
-
-
-    @Override
-    public void setSerializer(CommonSerializer serializer) {
-        this.serializer = serializer;
+    public SocketClient(Integer serializer, LoadBalance loadBalancer) {
+        this.serviceDiscovery = new NacosServiceDiscovery(loadBalancer);
+        this.serializer = CommonSerializer.getByCode(serializer);
     }
 
 
@@ -51,7 +59,7 @@ public class SocketClient implements RpcClient {
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+        InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
         try (Socket socket = new Socket()) {
             socket.connect(inetSocketAddress);
             OutputStream outputStream = socket.getOutputStream();

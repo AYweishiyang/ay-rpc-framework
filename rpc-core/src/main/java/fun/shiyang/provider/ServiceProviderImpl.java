@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ServiceProviderImpl implements ServiceProvider {
     /**
-     * 服务名与提供服务的对象的对应关系，key为接口名，value为实现对应接口的对象，所以一个接口只可以有一个实现
+     * 服务名与提供服务的对象的对应关系，key为自定义的类名，value为对象
      */
     private static final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
     /**
@@ -24,22 +24,14 @@ public class ServiceProviderImpl implements ServiceProvider {
     private static final Set<String> registeredService = ConcurrentHashMap.newKeySet();
 
     @Override
-    public <T> void addServiceProvider(T service) {
-        //获取全限定类名
-        String serviceName = service.getClass().getCanonicalName();
+    public <T> void addServiceProvider(T service,String serviceName) {
+
         if(registeredService.contains(serviceName)) {
             return;
         }
-        //将serviceName添加到set中
         registeredService.add(serviceName);
-        Class<?>[] interfaces = service.getClass().getInterfaces();
-        if(interfaces.length == 0) {
-            throw new RpcException(RpcError.SERVICE_NOT_IMPLEMENT_ANY_INTERFACE);
-        }
-        for(Class<?> i : interfaces) {
-            serviceMap.put(i.getCanonicalName(), service);
-        }
-        log.info("向接口: {} 注册服务: {}", interfaces, serviceName);
+        serviceMap.put(serviceName, service);
+        log.info("向接口: {} 注册服务: {}", service.getClass().getInterfaces(), serviceName);
     }
 
     @Override

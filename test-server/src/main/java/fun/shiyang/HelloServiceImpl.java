@@ -1,6 +1,7 @@
 package fun.shiyang;
 
 
+import fun.shiyang.annotation.Service;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  * @create 2020-09-01 12:49
  */
 @Slf4j
+@Service
 public class HelloServiceImpl implements HelloService{
     @Override
     public String hello(HelloObject object) {
