@@ -36,13 +36,18 @@ public class RpcClientProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
         log.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
-        RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
-                method.getName(), args, method.getParameterTypes(), false);
+        RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(),
+                method.getDeclaringClass().getName(),
+                method.getName(),
+                args,
+                method.getParameterTypes(),
+                false);
         RpcResponse rpcResponse = null;
         if (client instanceof NettyClient) {
             try {
                 log.info("NettyClient begin sendRequest");
                 CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>) client.sendRequest(rpcRequest);
+                //这里会阻塞
                 rpcResponse = completableFuture.get();
                 log.info("receive rpcResponse = " + rpcResponse);
             } catch (Exception e) {

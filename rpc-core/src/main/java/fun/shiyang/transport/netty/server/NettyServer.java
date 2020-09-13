@@ -4,17 +4,11 @@ package fun.shiyang.transport.netty.server;
 import fun.shiyang.coder.CommonDecoder;
 import fun.shiyang.coder.CommonEncoder;
 import fun.shiyang.config.CustomShutdownHook;
-import fun.shiyang.enumeration.RpcError;
-import fun.shiyang.exception.RpcException;
-import fun.shiyang.provider.ServiceProvider;
 import fun.shiyang.provider.ServiceProviderImpl;
-import fun.shiyang.registry.ServiceRegistry;
-import fun.shiyang.registry.nacos.NacosServiceRegistry;
 import fun.shiyang.registry.zk.ZkServiceRegistry;
 import fun.shiyang.serializer.CommonSerializer;
 import fun.shiyang.serializer.KryoSerializer;
 import fun.shiyang.transport.AbstractRpcServer;
-import fun.shiyang.transport.RpcServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -23,8 +17,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
-
-import java.net.InetSocketAddress;
 
 /**
  * @author ay
@@ -71,7 +63,7 @@ public class NettyServer extends AbstractRpcServer {
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() { //5.初始化通讯管道 -----重点
                         @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
+                        protected void initChannel(SocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new CommonEncoder(new KryoSerializer()));
                             pipeline.addLast(new CommonDecoder());

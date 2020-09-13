@@ -14,7 +14,7 @@ public class NettyTestServer {
 
     public static void main(String[] args) {
 
-        RpcServer server = new NettyServer("127.0.0.1", 9999, CommonSerializer.PROTOBUF_SERIALIZER);
+        RpcServer server = new NettyServer("127.0.0.1", 9999, CommonSerializer.KRYO_SERIALIZER);
         server.start();
     }
 

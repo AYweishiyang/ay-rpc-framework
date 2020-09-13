@@ -66,13 +66,13 @@ public class NettyClient implements RpcClient {
                 return null;
             }
             unprocessedRequests.put(rpcRequest.getRequestId(), resultFuture);
-            channel.writeAndFlush(rpcRequest).addListener((ChannelFutureListener) future1 -> {
-                if (future1.isSuccess()) {
+            channel.writeAndFlush(rpcRequest).addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
                     log.info(String.format("客户端发送消息: %s", rpcRequest.toString()));
                 } else {
-                    future1.channel().close();
-                    resultFuture.completeExceptionally(future1.cause());
-                    log.error("发送消息时有错误发生: ", future1.cause());
+                    future.channel().close();
+                    resultFuture.completeExceptionally(future.cause());
+                    log.error("发送消息时有错误发生: ", future.cause());
                 }
             });
         } catch (InterruptedException e) {
@@ -84,9 +84,9 @@ public class NettyClient implements RpcClient {
         return resultFuture;
     }
 
-//
+//    未使用CompletableFuture
 //    @Override
-//    public Object sendRequest(RpcRequest rpcRequest) {
+//    public Object sendRequest1(RpcRequest rpcRequest) {
 //        if(serializer == null) {
 //            log.error("未设置序列化器");
 //            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);

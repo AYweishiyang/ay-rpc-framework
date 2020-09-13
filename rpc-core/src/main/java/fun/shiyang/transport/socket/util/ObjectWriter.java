@@ -25,6 +25,7 @@ public class ObjectWriter {
         }
         outputStream.write(intToBytes(serializer.getCode()));
         byte[] bytes = serializer.serialize(object);
+
         outputStream.write(intToBytes(bytes.length));
         outputStream.write(bytes);
         outputStream.flush();

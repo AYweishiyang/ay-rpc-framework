@@ -29,6 +29,9 @@ public class ChannelProvider {
     private static EventLoopGroup eventLoopGroup;
     private static Bootstrap bootstrap = initializeBootstrap();
 
+    /**
+     * key:InetSocketAddress value:Channel
+     */
     private static Map<String, Channel> channels = new ConcurrentHashMap<>();
 
     public static Channel get(InetSocketAddress inetSocketAddress, CommonSerializer serializer) throws InterruptedException {
@@ -46,13 +49,14 @@ public class ChannelProvider {
             protected void initChannel(SocketChannel ch) {
                 /*自定义序列化编解码器*/
                 // RpcResponse -> ByteBuf
-                ch.pipeline().addLast(new CommonEncoder(serializer))
+                ch.pipeline()
+                        .addLast(new CommonEncoder(serializer))
                         .addLast(new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS))
                         .addLast(new CommonDecoder())
                         .addLast(new NettyClientHandler());
             }
         });
-        Channel channel = null;
+        Channel channel;
         try {
             channel = connect(bootstrap, inetSocketAddress);
         } catch (ExecutionException e) {
